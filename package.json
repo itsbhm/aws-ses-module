@@ -1,0 +1,36 @@
+{
+    "name": "aws-ses-module",
+    "version": "1.0.0-beta",
+    "description": "A developer-friendly Node.js module for sending emails using AWS SES with support for to, cc, bcc, HTML emails, and rate limiting.",
+    "main": "index.js",
+    "author": "Shubham Vishwakarma",
+    "license": "MIT",
+    "dependencies": {
+        "aws-sdk": "^2.1372.0",
+        "dotenv": "^16.0.3",
+        "rate-limiter-flexible": "^2.3.2",
+        "validator": "^13.9.0"
+    },
+    "devDependencies": {
+        "jest": "^29.7.0"
+    },
+    "scripts": {
+        "test": "jest"
+    },
+    "keywords": [
+        "aws",
+        "aws-ses",
+        "email",
+        "nodejs",
+        "rate-limiting",
+        "email-module",
+        "to",
+        "cc",
+        "bcc",
+        "html-email"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/itsbhm/aws-ses-module.git"
+    }
+}
