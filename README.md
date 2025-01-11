@@ -1,200 +1,198 @@
-# aws-ses-module
+# AWS SES Email Module with Rate Limiting
 
-A developer-friendly Node.js module for sending emails using AWS SES (Simple Email Service). Supports `to`, `cc`, `bcc`, HTML/plain text emails, input validation, and rate limiting out of the box.
+A powerful and easy-to-use Node.js module for sending emails using **AWS SES** (Simple Email Service). This package supports sending emails to `to`, `cc`, and `bcc` recipients, HTML email bodies, and includes built-in **rate limiting** to ensure your email sending stays within AWS SES quota limits.
 
----
+## Key Features of AWS SES Email Module with Rate Limiting
 
-## Features
-
-- **AWS SES Integration**: Easily send emails using AWS SES with minimal configuration.
-- **Multiple Recipients**: Supports `to`, `cc`, and `bcc` fields with multiple recipients.
-- **HTML and Plain Text Emails**: Send emails in HTML or plain text formats.
-- **Rate Limiting**: Prevent abuse by setting limits on the number of emails sent per minute.
-- **Input Validation**: Validates email addresses and other parameters to ensure reliability.
-- **Developer-Friendly**: Easy to integrate and highly configurable for your project needs.
-
----
+- **AWS SES Integration**: Seamlessly send emails via AWS SES with minimal configuration.
+- **Built-in Rate Limiting**: Prevent exceeding your SES sending limits by rate-limiting email sends (10 emails per minute by default).
+- **Email Input Validation**: Ensure that email inputs such as recipients, subject, and body are correctly formatted using **Zod** schema validation.
+- **HTML and Plain Text Email Support**: Send both **HTML** and **plain-text** emails with customizable subjects and bodies.
+- **Error Handling**: Detailed error messages to help diagnose and fix issues during email sending.
+- **Easy Configuration with Environment Variables**: Configure your AWS credentials and SES settings through environment variables.
 
 ## Installation
 
-Install the module via NPM:
+To get started with the AWS SES Email Module, install it via npm:
 
 ```bash
 npm install aws-ses-module
 ```
 
----
+## Configuration Guide
 
-## Configuration
+### Step 1: Set Up Your AWS SES Credentials
 
-The module requires AWS credentials and configuration. Create a `.env` file in your project root and define the following:
+To use AWS SES, you'll need to have an AWS account with SES configured. Set up a `.env` file in the root of your project with the following AWS credentials and SES configurations:
 
-```env
+```ini
 AWS_ACCESS_KEY_ID=your-aws-access-key-id
 AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
 AWS_REGION=your-aws-region
 SENDER_EMAIL=your-sender-email@example.com
 ```
 
-- **AWS_ACCESS_KEY_ID**: Your AWS access key.
-- **AWS_SECRET_ACCESS_KEY**: Your AWS secret access key.
-- **AWS_REGION**: The AWS region (e.g., `us-east-1`).
-- **SENDER_EMAIL**: The verified sender email address in AWS SES.
+- `AWS_ACCESS_KEY_ID`: Your AWS access key ID.
+- `AWS_SECRET_ACCESS_KEY`: Your AWS secret access key.
+- `AWS_REGION`: The AWS region where your SES service is configured (e.g., `us-east-1`).
+- `SENDER_EMAIL`: A verified sender email address with SES (this will be the "From" address for all outgoing emails).
 
----
+### Step 2: TypeScript Setup
 
-## Usage
+This module is written in TypeScript. Ensure that your project is set up to compile TypeScript files. If needed, install TypeScript and related packages:
 
-Here’s how you can send an email using the `aws-ses-module`:
-
-### Basic Example:
-
-```javascript
-const { sendEmail } = require('aws-ses-module');
-
-(async () => {
-  try {
-    const result = await sendEmail({
-      to: ['recipient@example.com'],
-      cc: ['cc-recipient@example.com'],
-      bcc: ['bcc-recipient@example.com'],
-      subject: 'Hello from AWS SES',
-      body: '<p>This is a test email sent using aws-ses-module.</p>',
-      isHtml: true,
-    });
-
-    console.log('Email sent successfully:', result);
-  } catch (error) {
-    console.error('Failed to send email:', error);
-  }
-})();
+```bash
+npm install --save-dev typescript ts-node tsconfig-paths
 ```
 
-### Plain Text Email Example:
+Create a `tsconfig.json` file if it doesn't already exist in your project root:
 
-```javascript
-const { sendEmail } = require('aws-ses-module');
-
-(async () => {
-  try {
-    const result = await sendEmail({
-      to: ['recipient@example.com'],
-      subject: 'Plain Text Email',
-      body: 'This is a plain text email.',
-      isHtml: false, // Set to false for plain text emails
-    });
-
-    console.log('Plain text email sent successfully:', result);
-  } catch (error) {
-    console.error('Failed to send plain text email:', error);
-  }
-})();
-```
-
----
-
-## API Reference
-
-### `sendEmail(options)`
-
-#### Parameters:
-
-| Parameter  | Type           | Required | Description                                                                                   |
-|------------|----------------|----------|-----------------------------------------------------------------------------------------------|
-| `to`       | `Array<String>`| Yes      | List of recipient email addresses.                                                           |
-| `cc`       | `Array<String>`| No       | List of CC recipient email addresses.                                                        |
-| `bcc`      | `Array<String>`| No       | List of BCC recipient email addresses.                                                       |
-| `subject`  | `String`       | Yes      | The subject of the email.                                                                    |
-| `body`     | `String`       | Yes      | The email content. Pass HTML or plain text based on the `isHtml` flag.                       |
-| `isHtml`   | `Boolean`      | Yes      | Set `true` for HTML emails and `false` for plain text emails.                                |
-
-#### Returns:
-
-- Resolves to an object containing:
-  ```javascript
-  {
-    success: true,
-    result: {
-      MessageId: '1234567890'
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": true,
+    "esModuleInterop": true,
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
     }
+  },
+  "include": ["src/**/*", "index.ts"],
+  "exclude": ["node_modules", "dist"]
+}
+```
+
+### Step 3: Send an Email
+
+Once the setup is complete, you can send emails using the `sendEmail` function.
+
+#### Example Usage (app.ts)
+
+```typescript
+import { sendEmail } from 'aws-ses-module';
+
+(async () => {
+  try {
+    const response = await sendEmail({
+      to: ['recipient@domain.com'],
+      subject: 'Hello from AWS SES',
+      body: '<h1>This is a test email</h1>',
+      isHtml: true, // Set to false if sending plain-text email
+    });
+    console.log('Email sent successfully:', response);
+  } catch (error) {
+    console.error('Failed to send email:', error instanceof Error ? error.message : 'Unknown error');
   }
-  ```
-- Rejects with an error if something goes wrong.
+})();
+```
 
----
+### Parameters for Sending Email
 
-## Advanced Features
+- **to** (`string[]`): Array of recipient email addresses.
+- **cc** (`string[]`, optional): Array of CC recipients (optional).
+- **bcc** (`string[]`, optional): Array of BCC recipients (optional).
+- **subject** (`string`): Subject of the email.
+- **body** (`string`): Body of the email.
+- **isHtml** (`boolean`, optional): Whether the email body is HTML (`true`) or plain text (`false`).
+- **attachments** (`any[]`, optional): Array of attachments (future support for AWS SES API-based attachment handling).
 
-### Rate Limiting
+## Rate Limiting
 
-By default, the module enforces a rate limit of **10 emails per minute**. This is configurable by modifying the `rateLimiter` settings in the module's source code (`src/rateLimiter.js`).
+The AWS SES Email Module comes with built-in rate limiting to ensure you don’t exceed your SES sending quota. By default, the module is configured to allow up to **10 emails per minute** (configurable).
 
-If you attempt to send emails faster than the limit, the module will throw a `RateLimitExceeded` error.
+### How Rate Limiting Works
 
----
+- Each email send request consumes one rate limit point.
+- The rate limiter allows up to 10 emails per minute.
+- If the rate limit is exceeded, an error is thrown: `"Rate limit exceeded. Please try again later."`
+
+The rate limiter uses the **`rate-limiter-flexible`** library to enforce this rule.
 
 ## Error Handling
 
-Errors are thrown as JavaScript exceptions, so you can catch and handle them appropriately. Common errors include:
+The module uses try-catch blocks to handle errors effectively:
 
-- **Validation Errors**:
-  ```javascript
-  Error: "to" field must be a non-empty array of valid email addresses.
-  ```
-- **AWS SES Errors**:
-  These are returned directly from AWS SES, such as invalid credentials or unverified email addresses.
+- **Validation Errors**: If the email input doesn’t meet the required format (e.g., invalid email address, empty subject, etc.), it throws a validation error with detailed messages.
+- **Rate Limit Errors**: If the rate limit is exceeded, the error message will be `"Rate limit exceeded. Please try again later."`
+- **AWS SES Errors**: Any errors from AWS SES are logged and thrown for easy troubleshooting.
 
----
+## Example Environment Setup
 
-## Testing
+Here’s an example of what your `.env` file should look like:
 
-This module comes with Jest tests. To run the test suite:
-
-1. Clone the repository.
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Run the tests:
-   ```bash
-   npm test
-   ```
-
-### Example Output:
-
-```bash
-PASS  test/emailService.test.js
-  sendEmail
-    ✓ should send an email successfully
-    ✓ should validate input and throw an error for invalid "to" email
-    ✓ should enforce rate limiting
-    ✓ should support plain text email
-
-Test Suites: 1 passed, 1 total
-Tests:       4 passed, 4 total
-Snapshots:   0 total
+```ini
+AWS_ACCESS_KEY_ID=your-aws-access-key-id
+AWS_SECRET_ACCESS_KEY=your-aws-secret-access-key
+AWS_REGION=us-east-1
+SENDER_EMAIL=your-sender-email@example.com
 ```
 
----
+## Running the Application
+
+You can run your application using `ts-node`, which allows you to run TypeScript files directly without needing to compile them first.
+
+### Run the Example with `npx`
+
+To run the example `app.ts`, use the following command:
+
+```bash
+npx ts-node -r tsconfig-paths/register app.ts
+```
+
+This command does the following:
+
+- `npx ts-node`: Runs the TypeScript file using `ts-node`.
+- `-r tsconfig-paths/register`: Ensures that your TypeScript path aliases (like `@/*`) are resolved correctly using `tsconfig-paths`.
+- `app.ts`: The TypeScript file containing the code to send emails.
+
+## Dependencies and Dev Dependencies
+
+### Dependencies
+
+- **`@aws-sdk/client-ses`**: The official AWS SDK for interacting with the SES (Simple Email Service) API to send emails.
+- **`rate-limiter-flexible`**: A powerful rate-limiting library for implementing rate limits like the 10 emails per minute in this module.
+- **`dotenv`**: A module for loading environment variables from a `.env` file.
+- **`zod`**: A TypeScript-first schema validation library used to validate email input fields (recipients, subject, body).
+
+### Dev Dependencies
+
+- **`typescript`**: TypeScript is used to write the module in a statically typed manner, improving reliability and maintainability.
+- **`ts-node`**: A tool for running TypeScript code directly without needing to compile it first.
+- **`tsconfig-paths`**: A package to support custom path mappings in the TypeScript configuration.
+- **`@types/node`**: Provides type definitions for Node.js to improve development experience and type-checking.
+
+```json
+"dependencies": {
+  "@aws-sdk/client-ses": "^3.726.1",
+  "dotenv": "^16.0.3",
+  "rate-limiter-flexible": "^5.0.4",
+  "zod": "^3.24.1"
+},
+"devDependencies": {
+  "typescript": "^5.2.0",
+  "ts-node": "^10.9.2",
+  "tsconfig-paths": "^4.2.0",
+  "@types/node": "^18.11.9"
+}
+```
 
 ## Contributing
 
-We welcome contributions! To contribute:
+Contributions to the module are welcome! To contribute, please fork the repository, make your changes, and submit a pull request.
 
-1. Fork the repository.
-2. Create a new feature branch.
-3. Commit your changes and submit a pull request.
+### How to Contribute
 
----
+1. Fork this repository.
+2. Create a new branch (`git checkout -b feature-name`).
+3. Make your changes and commit them (`git commit -m 'Add new feature'`).
+4. Push to your branch (`git push origin feature-name`).
+5. Open a pull request.
 
 ## License
 
-This project is licensed under the [MIT License](./LICENSE).
-
----
-
-## Author
-
-Developed by [Shubham Vishwakarma](https://github.com/itsbhm).
-
-For queries or issues, feel free to raise an issue on the [GitHub repository](https://github.com/itsbhm/aws-ses-module/issues).
+**Author**: [Shubham Vishwakarma](https://github.com/itsbhm)  
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

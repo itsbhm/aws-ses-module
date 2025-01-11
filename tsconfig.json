@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                // This sets the JavaScript target version to ES2020.
+    "module": "CommonJS",              // Using CommonJS module system, which is typically used in Node.js.
+    "outDir": "./dist",                // Compiled files will be output to the "dist" folder.
+    "rootDir": "./",                   // The root directory is set to the project root, which is correct.
+    "strict": true,                    // Enables all strict type-checking options.
+    "esModuleInterop": true,           // Ensures compatibility between ES Modules and CommonJS modules.
+    "baseUrl": "./",                   // Base directory for relative module imports.
+    "paths": {
+      "@/*": ["src/*"]                 // This allows using "@" as a shortcut to import from "src".
+    },
+    "typeRoots": [
+      "node_modules/@types"            // Look for type definitions inside the node_modules/@types folder.
+    ]
+  },
+  "include": ["src/**/*", "index.ts"],  // Include both the "src" folder and index.ts (if it's in the project root).
+  "exclude": ["node_modules", "dist"]   // Exclude "node_modules" and the "dist" folder from the compilation.
+}
