@@ -1,6 +1,7 @@
 import { SESClient, SendEmailCommand, SendEmailCommandInput } from '@aws-sdk/client-ses';
-import { validateEmailInput } from '@/validator';
-import { consumeRateLimit } from '@/rateLimiter';
+import { validateEmailInput } from './validator';
+import { consumeRateLimit } from './rateLimiter';
+import { EmailParams, EmailResult } from './types';
 
 const sesClient = new SESClient({
   region: process.env.AWS_REGION,
@@ -17,24 +18,11 @@ export const sendEmail = async ({
   subject,
   body,
   isHtml = true,
-  attachments = [],
-}: {
-  to: string[];
-  cc?: string[];
-  bcc?: string[];
-  subject: string;
-  body: string;
-  isHtml?: boolean;
-  attachments?: any[];
-}): Promise<{ success: boolean; result?: any }> => {
+}: EmailParams): Promise<EmailResult> => {
   try {
-    // Validate email inputs
     validateEmailInput({ to, cc, bcc, subject, body });
-
-    // Enforce rate-limiting
     await consumeRateLimit('email-send');
 
-    // Construct email parameters
     const params: SendEmailCommandInput = {
       Destination: { ToAddresses: to, CcAddresses: cc, BccAddresses: bcc },
       Message: {
@@ -51,6 +39,7 @@ export const sendEmail = async ({
     return { success: true, result };
   } catch (error) {
     console.error('Error sending email:', (error as Error).message);
-    throw error;
+    return { success: false, error: (error as Error).message };
   }
 };
+

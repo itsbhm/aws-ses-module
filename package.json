@@ -1,36 +1,39 @@
 {
-    "name": "aws-ses-module",
-    "version": "1.0.1",
-    "description": "A developer-friendly Node.js module for sending emails using AWS SES with support for to, cc, bcc, HTML emails, and rate limiting.",
-    "main": "index.js",
-    "author": "Shubham Vishwakarma",
-    "license": "MIT",
-    "dependencies": {
-        "@aws-sdk/client-ses": "^3.726.1",
-        "dotenv": "^16.0.3",
-        "rate-limiter-flexible": "^5.0.4",
-        "validator": "^13.12.0",
-        "zod": "^3.24.1"
-    },
-    "devDependencies": {
-        "ts-node": "^10.9.2",
-        "tsconfig-paths": "^4.2.0",
-        "typescript": "^5.2.0"
-    },
-    "scripts": {
-        "build": "tsc"
-    },
-    "keywords": [
-        "aws",
-        "email",
-        "aws-ses",
-        "typescript",
-        "node",
-        "rate-limiting",
-        "email-module"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/itsbhm/aws-ses-module.git"
-    }
+  "name": "aws-ses-module",
+  "version": "1.0.2-beta",
+  "description": "A developer-friendly Node.js module for sending emails using AWS SES with support for to, cc, bcc, HTML emails, and rate limiting.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "aws",
+    "email",
+    "aws-ses",
+    "typescript",
+    "node",
+    "rate-limiting",
+    "email-module"
+  ],
+  "author": "Shubham Vishwakarma",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-ses": "^3.726.1",
+    "dotenv": "^16.0.3",
+    "rate-limiter-flexible": "^5.0.4",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.2.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/itsbhm/aws-ses-module.git"
+  }
 }
