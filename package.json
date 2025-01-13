@@ -1,6 +1,6 @@
 {
   "name": "aws-ses-module",
-  "version": "1.0.2-beta",
+  "version": "1.0.2",
   "description": "A developer-friendly Node.js module for sending emails using AWS SES with support for to, cc, bcc, HTML emails, and rate limiting.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
